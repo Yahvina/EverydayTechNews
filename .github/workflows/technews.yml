@@ -1,38 +1,33 @@
 name   名字: 发送邮件
-on   :   
+on:   :
   workflow_dispatch:
-  schedule   时间表:   
-    - cron: '30 23 * * *'  # 每天上海时间08:30执行（UTC+8转换为UTC时间00:30）
-jobs   工作:   
+  schedule:   时间表:
+    - cron: '30 23 * * *'
+jobs:   工作:
   setup-and-test:
-    runs-on   运行在: ubuntu-latest  # 使用 Ubuntu 环境
-    
-    steps   步骤:   
-      - name   名字: 检出代码库
-        uses用途:行动/ checkout@v4   使用: actions/checkout@v4
-        with   :   
-          persist-credentials: true  # 确保能够推送更改
-      
-      - name   名字: 设置 Git
-        run   运行:|   运行: |
-          git config user.name "NowScott"git config user.name "NowScott"；git config user.name "NowScott"；
-          git config user.email "nowscott@qq.com"Git配置用户。电子邮件“nowscott@qq.com"Git配置用户。电子邮件“nowscott@qq.com"
-
-      - name   名字: 设置 Python
-        uses用途:行动/ setup-python@v5   使用: actions/setup-python@v5
-        with   :   
-          python-version   python版本:“3.倍”   python版本: '3.x'   
-
-      - name   名字: 安装 Python 依赖
-        run   运行:|   运行: |
-          python -m pip install --upgrade pipPython -m PIP install——upgrade PIPPython -m PIP install——upgrade PIP
-          pip install -r requirements.txt
+    runs-on: ubuntu-latest
+    steps:   步骤:
+      - name: 检出代码库
+        uses: actions/checkout@v4   用途:行动/ checkout@v4
+        with:   :
+          persist-credentials: true
+      - name: 设置 Git
+        run: |   运行:|
+          git config user.name "NowScott"git config user.name "NowScott"；
+          git config user.email "nowscott@qq.com"Git配置用户。电子邮件“nowscott@qq.com"
+      - name: 设置 Python
+        uses: actions/setup-python@v5用途:行动/ setup-python@v5
+        with:   :
+          python-version: '3.x'   python版本:“3.倍”   python版本:“3.倍”
+      - name: 安装 Python 依赖
+        run: |   运行:|
+          python -m pip install --upgrade pipPython -m PIP install——upgrade PIP
+          pip install -r requirements.txtPIP install -r requirements.txt
       - name: 设置环境变量并运行 main.py
         env:
-          SENDING_ACCOUNTSENDING_ACCOUNT: ${{secrets。SENDING_ACCOUNT}}: ${{ secrets.SENDING_ACCOUNT }}
-          SENDING_PASSWORDSENDING_PASSWORD: ${{secrets。SENDING_PASSWORD}}: ${{ secrets.SENDING_PASSWORD }}
-          SERVER服务器：${{secrets。服务器}}   服务器: ${{ secrets.SERVER }}
-          RECEIVER_EMAIL: ${{ secrets.RECEIVER_EMAIL }}
-
-        run   运行:|   运行: |
+          SENDING_ACCOUNT: ${{ secrets.SENDING_ACCOUNT }}SENDING_ACCOUNT: ${{secrets。SENDING_ACCOUNT}}
+          SENDING_PASSWORD: ${{ secrets.SENDING_PASSWORD }}SENDING_PASSWORD: ${{secrets。SENDING_PASSWORD}}
+          SERVER: ${{ secrets.SERVER }}服务器：${{secrets。服务器}}
+          RECEIVER_EMAIL: ${{ secrets.RECEIVER_EMAIL }}RECEIVER_EMAIL: ${{secrets。RECEIVER_EMAIL}}
+        run: |   运行:|
           python src/main.py
