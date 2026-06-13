@@ -1,40 +1,41 @@
-# 标准库导入
-import os
-import re
-import sys
-import time
-from datetime import datetime, timedelta
+
+    # 标准库导入
+import os   进口的
+import re   进口再保险
+import sys   导入系统
+import time   导入的时间
+from datetime import datetime, timedelta从datetime导入datetime， timedelta
 
 # 本地化和时区处理
-from zoneinfo import ZoneInfo 
+from zoneinfo import ZoneInfo 从zoneinfo导入zoneinfo
 
 # 网络请求和配置文件处理
-import requests
-import configparser
+import requests   进口的请求
+import configparser   进口configparser
 
 # 邮件处理库
-import smtplib
-from email.header import Header
-from email.mime.text import MIMEText
+import   进口smtplib smtplib
+from从电子邮件。导入header email.header import Header
+from从email.mime.text导入mime文本 email.mime.text import MIMEText
 
 # 获取环境变量
-def get_env_variable(name):
-    try:
-        return os.environ[name]
-    except KeyError:
+def get_env_variable(name):def get_env_variable(名称):Def get_env_variable(name)：def get_env_variable(name):def get_env_variable(namespace):def get_env_variable(name)：戴夫get_env_variable(名字):戴夫get_env_variable(名称):戴夫get_env_variable(名字):戴夫get_env_variable(名字):戴夫get_env_variable (namespace):戴夫get_env_variable(名字):
+    try:   试一试:
+        return os.environ[name]   返回os.environ   约[名称]
+    except KeyError:   除了KeyError:
         print(f"环境变量 {name} 未设置，请检查配置。")
         sys.exit(1)
 
-def fetch_notion_users(api_key, database_id):
-    url = f"https://api.notion.com/v1/databases/{database_id}/query"
-    headers = {
-        "Authorization": f"Bearer {api_key}",
-        "Notion-Version": "2021-05-13",
-        "Content-Type": "application/json"
+def fetch_notion_users(api_key, database_id):Def fetch_notion_users(api_key, database_id)：
+    url = f"https://api.notion.com/v1/databases/{database_id}/query"Url = f"https://api.notion.com/v1/databases/f"https://api.notion.com/v1/databases/{database_id}/query"；
+    headers = {   Headers = {
+        "Authorization": f"Bearer {api_key}","Authorization": f"Bearer {api_key}",
+        "Notion-Version": "2021-05-13","Notion-Version": "2021-05-13",
+        "Content-Type": "application/json""Content-Type": "application/json"
     }
-    response = requests.post(url, headers=headers)
-    if response.status_code != 200:
-        raise Exception("Failed to fetch data from Notion API: " + response.text) 
+    response = requests.post(url, headers=headers)响应=请求。帖子(url,头=标题)
+    if response.status_code != 200:如果响应。status_code != 200:
+        raise Exception("Failed to fetch data from Notion API: " + response.text) 引发异常（"；从概念API获取数据失败："； response.text）
     data = response.json()
     users = []
     for result in data.get("results", []):
@@ -43,47 +44,47 @@ def fetch_notion_users(api_key, database_id):
         # 假设姓名字段名为 "Name"，邮箱字段名为 "Email"
         name = properties.get("Name", {}).get("title", [{}])[0].get("text", {}).get("content")
         email = properties.get("Email", {}).get("email")
-        if name and email:
-            user_data["name"] = name
+        if name and email:   如果姓名和电子邮件：
+            user_data["name"] = name   User_data ["name"] =名称
             user_data["email"] = email
-            users.append(user_data)
+            users.append(user_data)User_data ["email"] = email
     return users
 
 def send_message(sender, password, server, receiver, text):
-    msg = MIMEText(text, 'html', 'utf-8')
+    msg = MIMEText(text, 'html', 'utf-8')   如果姓名和电子邮件：
     subject = '今日科技早报'
     msg['Subject'] = Header(subject, 'utf-8')  # type: ignore # 邮件主题
-    attempt = 1
-    while attempt <= 3:
-        try:
-            smtpobj = smtplib.SMTP_SSL(server)
-            smtpobj.connect(server)
-            smtpobj.login(sender, password)
-            smtpobj.sendmail(sender, receiver, msg.as_string())
+    attempt = 1   尝试次数= 1
+    while attempt <= 3:   当尝试<；= 3时：while attempt <= 3:   当尝试<；= 3时：while attempt <= 3:   当尝试<；= 3时：while attempt <= 3:   当尝试<；= 3时：
+        try:   试一试:
+            smtpobj = smtplib.SMTP_SSL(server)Smtpobj = smtplib。SMTP_SSL(服务器)
+            smtpobj.connect(server)   smtpobj.connect(服务器)
+            smtpobj.login(sender, password)smtpobj。登录(发送者、密码)
+            smtpobj.sendmail   进口的(sender, receiver, msg.as_string())smtpobj。Sendmail（发件人，收件人，msg.as_string()）
             print("邮件发送成功")
             smtpobj.quit()  # 关闭服务器
-            return True
-        except smtplib.SMTPException:
+            return True   还真
+        except smtplib.SMTPException:smtplib除外。SMTPException:
             print("尝试发送邮件失败，进行下一次尝试...")
             time.sleep(3)
-            attempt += 1
+            attempt += 1   尝试次数= 1   attempt  = 1   尝试次数= 1
     print("达到最大尝试次数，无法发送邮件")
-    return False
+    return False   返回假
 
 def is_news_sorted(news_string):
     """检查新闻是否已经排序（通过检查是否包含(sorted)标记）"""
     # 检查是否包含排序后的标记(sorted)
-    return "(sorted)" in news_string
+    return "(sorted)" in news_string返回"；（排序）"；在news_stringreturn "(sorted)" in   在 news_string返回"；（排序）"；在news_stringreturn "(sorted)" in news_string返回"；（排序）"；在news_stringreturn "(sorted)" in   在 news_string返回"；（排序）"；在news_string
 
-def simple_filter_news(matches):
+def simple_filter_news(matches):def simple_filter_news(匹配):
     """简单过滤新闻，返回前25条高质量新闻"""
-    from news_filter import filter_news_list, should_filter_news
+    from news_filter import filter_news_list, should_filter_news从news_filter导入filter_news_list， should_filter_news
     
     # 将matches转换为(title, url)格式
-    news_list = [(match[0], match[1]) for match in matches]
+    news_list = [(match[0], match[1]) for match in matches]News_list = [(match[0], match[1]) for match in matches]
     
     # 使用通用过滤函数过滤新闻
-    filtered_news = filter_news_list(news_list)
+    filtered_news = filter_news_list(news_list)Filtered_news = filter_news_list（新闻列表）
     
     # 进一步过滤掉标题过短的新闻
     quality_filtered = [(title, url) for title, url in filtered_news if len(title) >= 10]
@@ -190,24 +191,22 @@ def main():
         print("没有新闻条目，结束程序运行")
         sys.exit(0)
 
-    try:
-        API_KEY = get_env_variable("NOTION_API_KEY")
-        DATABASE_ID = get_env_variable("NOTION_DATABASE_ID")
-        sending_account = get_env_variable("SENDING_ACCOUNT")
-        sending_password = get_env_variable("SENDING_PASSWORD")
-        server = get_env_variable("SERVER")
-        users = fetch_notion_users(API_KEY, DATABASE_ID)  # 确保这个函数调用不抛出KeyError
-    except Exception as e:
+        try:
+        sending_account = get_env_variable("SENDING_ACCOUNT")sending_account = get_env_variable（" sending_account "）
+        sending_password = get_env_variable("SENDING_PASSWORD")sending_password = get_env_variable（sending_password "）
+        server = get_env_variable("SERVER")server = get_env_variable（" server "）
+        receiver_email = get_env_variable("RECEIVER_EMAIL")
+    except Exception as e:   例外情况如下：
         print("推送消息失败，发生了一个未处理的异常:", e)
         sys.exit(1)
 
-    for user in users:
-        personalized_message = message(user['name'], formatted_news)  # 创建个性化消息
-        success = send_message(sending_account, sending_password, server, user['email'], personalized_message)
-        if not success:
-            print(f"邮件发送失败：用户 {user['name']} ({user['email']})")
-        else:
-            print(f"邮件发送成功")
+    personalized_message = message("读者", formatted_news)
+    success = send_message(sending_account, sending_password, server, receiver_email, personalized_message)
+    if not success:
+        print("邮件发送失败")
+    else:   其他:
+        print("邮件发送成功")
+
     
     # # 以下部分是我本地测试时使用的代码
     # send_message(sending_account, sending_password, server,'nowscott@qq.com',message('NowScott', formatted_news))
